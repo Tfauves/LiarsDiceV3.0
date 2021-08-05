@@ -8,6 +8,8 @@ public class Game {
     public Map<Integer, Integer> diceOnTable = new HashMap<>();
     private final int MAX_PLAYERS = 6;
     private final int MIN_PLAYERS = 1;
+    public int initialBidDiceQty;
+    public int initialBidDiceFaceValue
 
     public Game() {
         System.out.println("Enter amount of players: ");
@@ -41,6 +43,18 @@ public class Game {
                 diceOnTable.put(die.faceUpValue, 1);
             }
         }
+
+    }
+
+
+
+    public void makeBid() {
+        System.out.println("make your bid: ");
+        System.out.println("Enter qty of dice on the table: ");
+        initialBidDiceQty = scanner.nextInt();
+        System.out.println("Enter dice face value: ");
+        initialBidDiceFaceValue = scanner.nextInt();
+        System.out.println();
 
     }
 
