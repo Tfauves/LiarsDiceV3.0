@@ -14,6 +14,7 @@ public class Game {
     public int nextGuessDiceFaceValue;
     public boolean isALie = false;
     public boolean isActiveRound = false;
+    public boolean isStartingPlayer = true;
 
     public Game() {
         System.out.println("Enter amount of players: ");
@@ -32,7 +33,6 @@ public class Game {
     public void roll() {
         for (Player activePlayer : players) {
             activePlayer.cup.roll();
-            System.out.println(activePlayer.cup.displayHand());
             setDiceOnTable(activePlayer.cup.dice);
         }
         System.out.println(diceOnTable);
@@ -50,6 +50,32 @@ public class Game {
 
     }
 
+    public void round() {
+        isActiveRound = true;
+        while (isActiveRound) {
+            roll();
+            turn();
+            isActiveRound = false;
+        }
+        declareWinner();
+    }
+
+    public void turn() {
+        for (Player activePlayer : players) {
+            System.out.println(activePlayer.playerName + " 's turn.");
+            System.out.println(activePlayer.cup.displayHand());
+
+            if (isStartingPlayer) {
+                makeBid();
+                isStartingPlayer = false;
+            } else {
+                guessOrCall(activePlayer);
+            }
+
+        }
+        isStartingPlayer = true;
+    }
+
     public void makeBid() {
         System.out.println("make your bid: ");
         System.out.println("Enter qty of dice on the table: ");
@@ -61,7 +87,7 @@ public class Game {
 
     }
 
-    public void guessOrCall() {
+    public void guessOrCall(Player activePlayer) {
         System.out.println("Type (bid) to bid or (lie) if you think the bid is a lie.");
         String playerGuess = scanner.nextLine();
         if (playerGuess.equals("bid")) {
@@ -74,7 +100,7 @@ public class Game {
 
 
         } else if (playerGuess.equals("lie")) {
-            checkLie();
+            checkLie(activePlayer);
         }
     }
 
@@ -94,12 +120,11 @@ public class Game {
         }
     }
 
-    public void checkLie() {
+    public void checkLie(Player activePlayer) {
         if (diceOnTable.containsKey(initialBidDiceFaceValue) && diceOnTable.get(initialBidDiceFaceValue) >= initialBidDiceQty) {
-            System.out.println("bid was true challenger loses");
+
             isALie = false;
             isActiveRound = false;
-            return;
 
         } else {
             isALie = true;
@@ -107,15 +132,24 @@ public class Game {
         }
         if (isALie) {
             System.out.println("bid was a lie");
-            System.out.println(player.playerName + " loses a die.");
-            player.cup.dice.remove(0);
+            System.out.println(players.get(players.indexOf(activePlayer) - 1).playerName + " loses a die.");
+            players.get(players.indexOf(activePlayer) - 1).cup.dice.remove(0);
 
-            if (player.cup.dice.size() == 0) {
-                System.out.println(player.playerName + " is out of dice. You are out of the game");
-            }
+//            if (activePlayer.cup.dice.size() == 0) {
+//                System.out.println(activePlayer.playerName + " is out of dice. You are out of the game");
+//           }
+        } else {
+            System.out.println("Bid was not a lie you lose a die");
+            players.get(players.indexOf(activePlayer)).cup.dice.remove(0);
         }
     }
 
+    public void declareWinner() {
+        if (players.get(0).cup.dice.size() > players.get(1).cup.dice.size()) {
+            System.out.println(players.get(0).playerName + " is the winner." );
+        } else {
+            System.out.println(players.get(1).playerName + " is the winner.");
+        }
     }
 
 
