@@ -5,6 +5,7 @@ import java.util.*;
 public class Game {
     public Scanner scanner = new Scanner(System.in);
     List<Player> players = new ArrayList<>();
+    List<Integer> previousBids = new ArrayList<>();
     public Map<Integer, Integer> diceOnTable = new HashMap<>();
     private final int MAX_PLAYERS = 6;
     private final int MIN_PLAYERS = 1;
@@ -52,12 +53,13 @@ public class Game {
 
     public void round() {
         isActiveRound = true;
-        while (isActiveRound) {
             roll();
+        while (isActiveRound) {
             turn();
+
             isActiveRound = false;
         }
-        declareWinner();
+        //declareWinner();
     }
 
     public void turn() {
@@ -70,8 +72,8 @@ public class Game {
                 isStartingPlayer = false;
             } else {
                 guessOrCall(activePlayer);
-            }
 
+            }
         }
         isStartingPlayer = true;
     }
@@ -82,9 +84,9 @@ public class Game {
         initialBidDiceQty = scanner.nextInt();
         System.out.println("Enter dice face value: ");
         initialBidDiceFaceValue = scanner.nextInt();
+        System.out.println("Current bid : " + initialBidDiceQty + "x " + initialBidDiceFaceValue);
+
         scanner.nextLine();
-
-
     }
 
     public void guessOrCall(Player activePlayer) {
@@ -95,12 +97,16 @@ public class Game {
             nextGuessDiceQty = scanner.nextInt();
             System.out.println("Enter face value: ");
             nextGuessDiceFaceValue = scanner.nextInt();
-//            betRecordDisplay = player.playerName + " 's bid is: " + secondBidHowManyDice + "x " + secondBidDiceFaceValue;
+            System.out.println("Current bid : " + nextGuessDiceQty + "x " + nextGuessDiceFaceValue);
+
             validateBid();
 
 
         } else if (playerGuess.equals("lie")) {
             checkLie(activePlayer);
+            for (Player player : players) {
+                System.out.println(player.cup.displayHand());
+            }
         }
     }
 
@@ -117,15 +123,14 @@ public class Game {
         } else {
             System.out.println("Invalid bid, bid again");
 
+
         }
     }
 
     public void checkLie(Player activePlayer) {
         if (diceOnTable.containsKey(initialBidDiceFaceValue) && diceOnTable.get(initialBidDiceFaceValue) >= initialBidDiceQty) {
-
             isALie = false;
             isActiveRound = false;
-
         } else {
             isALie = true;
             isActiveRound = false;

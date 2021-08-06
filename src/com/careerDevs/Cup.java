@@ -15,22 +15,17 @@ public class Cup {
     }
 
     public void roll() {
-
         for (Die die : dice) {
             die.roll();
         }
     }
 
-
     public String displayHand() {
-
         String hand = " ";
         for (Die die : dice) {
             hand += die.faceUpValue + " ";
         }
         return hand.trim();
     }
-
-
 
 }

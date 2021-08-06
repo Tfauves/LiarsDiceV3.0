@@ -11,7 +11,7 @@ public class Die {
         numberOfSides = 6;
     }
 
-        public void roll() {
+    public void roll() {
         Random dieValue = new Random();
         int maxSideValue = 6;
         int minSideValue =1;
